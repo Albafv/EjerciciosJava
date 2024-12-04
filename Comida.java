@@ -1,4 +1,6 @@
 package com.sinensia;
+import java.util.ArrayList;
+import java.util.Collections;
 
 interface DatoComida {
     String datoComida();
@@ -18,11 +20,28 @@ public abstract class Comida {
     // Constructor con atributos comunes
     public Comida(String nombre, int hidratos, int proteina, int grasas, boolean tieneGluten) {
         this.nombre = nombre;
-        this.hidratos = hidratos;
-        this.proteina = proteina;
-        this.grasas = grasas;
-        this.calorias = calcularCalorias(hidratos, proteina, grasas);
-        this.tieneGluten = tieneGluten;
+
+        // Manejo de excepción. Si los parámetros son negativos el programa no se ejecuta
+        try {
+            if (hidratos < 0 || proteina < 0 || grasas < 0) {
+                // Lanza una excepción si los valores son negativos
+                throw new IllegalArgumentException("Los valores no pueden ser negativos.");
+            }
+            // Asignación de valores si son >0
+            this.hidratos = hidratos;
+            this.proteina = proteina;
+            this.grasas = grasas;
+            this.calorias = calcularCalorias(hidratos, proteina, grasas);
+            this.tieneGluten = tieneGluten;
+
+        } catch (IllegalArgumentException e) {
+            // Si se lanza la excepción, la capturamos aquí 
+            System.out.println("Error al crear " + nombre + ": " + e.getMessage());
+            
+            // Detenemos la ejecución del programa
+            System.exit(1); 
+        }
+
     
     }
 
@@ -111,15 +130,45 @@ class ComidaResultados{
         Verdura patata = new Verdura("Patata", 7, 2, 0, false);
         Carne fileteTernera = new Carne("Filete de Ternera", 15, 40, 25, true);
 
-        // Resultados
+
+
+
+         // Colecciones: Crear un ArrayList para calorías y otro pa comidas
+         ArrayList<Integer> listaCalorias = new ArrayList<>();
+         ArrayList<Comida> listaComida = new ArrayList<>();
+         // Meter las calorías y cada comida a los ArrayList
+         listaCalorias.add(manzana.calorias);
+         listaCalorias.add(salmon.calorias);
+         listaCalorias.add(pollo.calorias);
+         listaCalorias.add(patata.calorias);
+         listaCalorias.add(fileteTernera.calorias);
+
+         listaComida.add(manzana);
+         listaComida.add(salmon);
+         listaComida.add(pollo);
+         listaComida.add(patata);
+         listaComida.add(fileteTernera);
+
+
+        // Ordenar los elementos del array de calorías de menor a mayor:
+        Collections.sort(listaCalorias);
+
+        // Qué comida se corresponde con este menor valor de calorías:
+        int menosCalorias = listaCalorias.get(0);
+        for (Comida comida : listaComida) {
+            if (comida.calorias == menosCalorias) {
+                System.out.println("La comida con menos calorías es: " + comida.nombre);
+                
+            }
+        }
+
         manzana.mostrarInfo();
-        System.out.println(manzana.datoComida());
-        salmon.mostrarInfo();
-        System.out.println(pollo.datoComida());
         patata.mostrarInfo();
         fileteTernera.mostrarInfo();
-
-
+        salmon.mostrarInfo();
+        System.out.println(manzana.datoComida());
+        System.out.println(pollo.datoComida());
+        
 
     }
 }
