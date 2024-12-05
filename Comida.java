@@ -1,8 +1,10 @@
 package com.sinensia;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 interface DatoComida {
     String datoComida();
@@ -16,11 +18,11 @@ public abstract class Comida {
     public int grasas;        // Grasas en gramos
     public int calorias;      // Calorías de la comida (por calcular)
     public boolean tieneGluten;  // Indica si la comida tiene gluten
-    
+    public LocalDate fechaCaducidad;   // Indica la fecha de caducidad
     
 
     // Constructor con atributos comunes
-    public Comida(String nombre, int hidratos, int proteina, int grasas, boolean tieneGluten) {
+    public Comida(String nombre, int hidratos, int proteina, int grasas, boolean tieneGluten, LocalDate fechaCaducidad) {
         this.nombre = nombre;
 
         // Manejo de excepción. Si los parámetros son negativos el programa no se ejecuta
@@ -35,6 +37,7 @@ public abstract class Comida {
             this.grasas = grasas;
             this.calorias = calcularCalorias(hidratos, proteina, grasas);
             this.tieneGluten = tieneGluten;
+            this.fechaCaducidad = fechaCaducidad;
 
         } catch (IllegalArgumentException e) {
             // Si se lanza la excepción, la capturamos aquí 
@@ -54,7 +57,8 @@ public abstract class Comida {
                             " | Hidratos: " + this.hidratos +
                             " | Proteína: " + this.proteina +
                             " | Grasas: " + this.grasas +
-                            " | Tiene Gluten: " + (this.tieneGluten ? "Sí" : "No"));
+                            " | Tiene Gluten: " + (this.tieneGluten ? "Sí" : "No") +
+                            " | Fecha de Caducidad: " + this.fechaCaducidad);
     }
 
 
@@ -70,8 +74,8 @@ public abstract class Comida {
 
 // Subclase Fruta
 class Fruta extends Comida implements DatoComida  {
-    public Fruta(String nombre, int hidratos, int proteina, int grasas, boolean tieneGluten) {
-        super(nombre, hidratos, proteina, grasas, tieneGluten);
+    public Fruta(String nombre, int hidratos, int proteina, int grasas, boolean tieneGluten, LocalDate fechaCaducidad) {
+        super(nombre, hidratos, proteina, grasas, tieneGluten, fechaCaducidad);
 
     }
 
@@ -85,8 +89,8 @@ class Fruta extends Comida implements DatoComida  {
 // Subclase Carne
 class Carne extends Comida implements DatoComida {
     
-    public Carne(String nombre, int hidratos, int proteina, int grasas, boolean tieneGluten) {
-        super(nombre, hidratos, proteina, grasas, tieneGluten);
+    public Carne(String nombre, int hidratos, int proteina, int grasas, boolean tieneGluten, LocalDate fechaCaducidad) {
+        super(nombre, hidratos, proteina, grasas, tieneGluten, fechaCaducidad);
     
     }
     @Override
@@ -98,8 +102,8 @@ class Carne extends Comida implements DatoComida {
 // Subclase Pescado
 class Pescado extends Comida implements DatoComida {
 
-    public Pescado(String nombre, int hidratos, int proteina, int grasas, boolean tieneGluten) {
-        super(nombre, hidratos, proteina, grasas, tieneGluten);
+    public Pescado(String nombre, int hidratos, int proteina, int grasas, boolean tieneGluten, LocalDate fechaCaducidad) {
+        super(nombre, hidratos, proteina, grasas, tieneGluten, fechaCaducidad);
         
     }
     @Override
@@ -111,8 +115,8 @@ class Pescado extends Comida implements DatoComida {
 // Subclase Verdura
 class Verdura extends Comida implements DatoComida {
     
-    public Verdura(String nombre, int hidratos, int proteina, int grasas, boolean tieneGluten) {
-        super(nombre, hidratos, proteina, grasas, tieneGluten);
+    public Verdura(String nombre, int hidratos, int proteina, int grasas, boolean tieneGluten, LocalDate fechaCaducidad) {
+        super(nombre, hidratos, proteina, grasas, tieneGluten, fechaCaducidad);
     
     }
     @Override
@@ -126,11 +130,11 @@ class ComidaResultados{
     public static void main(String[] args) {
 
         // Crear instancias de comida
-        Fruta manzana = new Fruta("Manzana", 25, 1, 0, false);
-        Pescado salmon = new Pescado("Salmón", 0, 20, 13, false);
-        Carne pollo = new Carne("Pollo", 0, 30, 4, false);
-        Verdura patata = new Verdura("Patata", 17, 2, 0, false);
-        Carne fileteTernera = new Carne("Filete de Ternera", 0, 40, 13, true);
+        Fruta manzana = new Fruta("Manzana", 25, 1, 0, false, LocalDate.of(2025, 05, 01));
+        Pescado salmon = new Pescado("Salmón", 0, 20, 13, false, LocalDate.of(2024, 12, 20));
+        Carne pollo = new Carne("Pollo", 0, 30, 4, false, LocalDate.of(2025, 02, 01));
+        Verdura patata = new Verdura("Patata", 17, 2, 0, false, LocalDate.of(2025, 07, 04));
+        Carne fileteTernera = new Carne("Filete de Ternera", 0, 40, 13, true, LocalDate.of(2024, 12, 17));
 
 
 
@@ -171,6 +175,7 @@ class ComidaResultados{
 
 
 
+
         // Agregar un STREAM para filtrar las comidas que tienen menos de 100 calorías
         System.out.println("Comidas con menos de 100 calorías:");
         listaComida.stream()  // Convertimos la lista en un Stream
@@ -183,6 +188,17 @@ class ComidaResultados{
                                        .sum();  // Sumamos todas las calorías
 
         System.out.println("El total de calorías de todas las comidas es: " + totalCalorias);
+
+
+
+
+        // Encontrar la FECHA más cercana y la más lejana
+        Comida comidaMasCercana = Collections.min(listaComida, (c1, c2) -> c1.fechaCaducidad.compareTo(c2.fechaCaducidad));
+        Comida comidaMasLejana = Collections.max(listaComida, (c1, c2) -> c1.fechaCaducidad.compareTo(c2.fechaCaducidad));
+        // Calcular la diferencia entre las fechas
+        long diferencia = ChronoUnit.DAYS.between(comidaMasCercana.fechaCaducidad, comidaMasLejana.fechaCaducidad);
+        System.out.println("Dispongo de "
+                         + diferencia + " días para terminar todos los alimentos antes de que caduquen.");
 
 
 
