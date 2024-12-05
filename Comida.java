@@ -1,6 +1,8 @@
 package com.sinensia;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+
 
 interface DatoComida {
     String datoComida();
@@ -124,25 +126,24 @@ class ComidaResultados{
     public static void main(String[] args) {
 
         // Crear instancias de comida
-        Fruta manzana = new Fruta("Manzana", 52, 1, 0, false);
-        Pescado salmon = new Pescado("Salmón", 30, 40, 30, false);
-        Carne pollo = new Carne("Pollo", 10, 60, 30, false);
-        Verdura patata = new Verdura("Patata", 7, 2, 0, false);
-        Carne fileteTernera = new Carne("Filete de Ternera", 15, 40, 25, true);
+        Fruta manzana = new Fruta("Manzana", 25, 1, 0, false);
+        Pescado salmon = new Pescado("Salmón", 0, 20, 13, false);
+        Carne pollo = new Carne("Pollo", 0, 30, 4, false);
+        Verdura patata = new Verdura("Patata", 17, 2, 0, false);
+        Carne fileteTernera = new Carne("Filete de Ternera", 0, 40, 13, true);
 
 
 
 
          // Colecciones: Crear un ArrayList para calorías y otro pa comidas
-         ArrayList<Integer> listaCalorias = new ArrayList<>();
+        //  ArrayList<Integer> listaCalorias = new ArrayList<>();
          ArrayList<Comida> listaComida = new ArrayList<>();
          // Meter las calorías y cada comida a los ArrayList
-         listaCalorias.add(manzana.calorias);
-         listaCalorias.add(salmon.calorias);
-         listaCalorias.add(pollo.calorias);
-         listaCalorias.add(patata.calorias);
-         listaCalorias.add(fileteTernera.calorias);
-
+        //  listaCalorias.add(manzana.calorias);
+        //  listaCalorias.add(salmon.calorias);
+        //  listaCalorias.add(pollo.calorias);
+        //  listaCalorias.add(patata.calorias);
+        //  listaCalorias.add(fileteTernera.calorias);
          listaComida.add(manzana);
          listaComida.add(salmon);
          listaComida.add(pollo);
@@ -151,17 +152,41 @@ class ComidaResultados{
 
 
         // Ordenar los elementos del array de calorías de menor a mayor:
-        Collections.sort(listaCalorias);
-
+        // Collections.sort(listaCalorias);
         // Qué comida se corresponde con este menor valor de calorías:
-        int menosCalorias = listaCalorias.get(0);
-        for (Comida comida : listaComida) {
-            if (comida.calorias == menosCalorias) {
-                System.out.println("La comida con menos calorías es: " + comida.nombre);
-                
-            }
-        }
+        // int menosCalorias = listaCalorias.get(0);
+        // for (Comida comida : listaComida) {
+            // if (comida.calorias == menosCalorias) {
+                // System.out.println("La comida con menos calorías es: " + comida.nombre);    
+            // }
+        // }
 
+
+
+        // Uso de LAMBDA para acortar la selección de comida con menos calorias:
+        // Ordenar las comidas por calorías usando lAMBDA
+        listaComida.sort(Comparator.comparingInt(c -> c.calorias));
+        // Mostrar la comida con menos calorías (la primera después de ordenar)
+        System.out.println("La comida con menos calorías es: " + listaComida.get(0).nombre);
+
+
+
+        // Agregar un STREAM para filtrar las comidas que tienen menos de 100 calorías
+        System.out.println("Comidas con menos de 100 calorías:");
+        listaComida.stream()  // Convertimos la lista en un Stream
+                   .filter(c -> c.calorias < 150)  // Filtramos las comidas con menos de 100 calorías
+                   .forEach(c -> System.out.println(c.nombre));  // Imprimimos los nombres de esas comidas
+
+        // STREAM: Calcular el total de calorías de todas las comidas
+        int totalCalorias = listaComida.stream()  // Convertimos la lista en un Stream
+                                       .mapToInt(c -> c.calorias)  // Extraemos las calorías de cada comida
+                                       .sum();  // Sumamos todas las calorías
+
+        System.out.println("El total de calorías de todas las comidas es: " + totalCalorias);
+
+
+
+        // Otros resultados:
         manzana.mostrarInfo();
         patata.mostrarInfo();
         fileteTernera.mostrarInfo();
