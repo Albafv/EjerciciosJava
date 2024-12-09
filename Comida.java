@@ -196,9 +196,9 @@ class ComidaResultados{
         Comida comidaMasCercana = Collections.min(listaComida, (c1, c2) -> c1.fechaCaducidad.compareTo(c2.fechaCaducidad));
         Comida comidaMasLejana = Collections.max(listaComida, (c1, c2) -> c1.fechaCaducidad.compareTo(c2.fechaCaducidad));
         // Calcular la diferencia entre las fechas
-        long diferencia = ChronoUnit.DAYS.between(comidaMasCercana.fechaCaducidad, comidaMasLejana.fechaCaducidad);
+        long diferencia = ChronoUnit.DAYS.between(LocalDate.now(), comidaMasLejana.fechaCaducidad);
         System.out.println("Dispongo de "
-                         + diferencia + " días para terminar todos los alimentos antes de que caduquen.");
+                         + diferencia + " días para terminar todos los alimentos antes de que todos caduquen.");
 
 
 
@@ -209,6 +209,23 @@ class ComidaResultados{
         salmon.mostrarInfo();
         System.out.println(manzana.datoComida());
         System.out.println(pollo.datoComida());
+
+
+        
+        
+        // Un ejemplo de resumen da los datos se podría hacer con StringBuilder:
+        // Crear resumen usando StringBuilder (método eficiente cuando hay concatenación)
+        StringBuilder resumen = new StringBuilder();
+        resumen.append("Resumen de Comidas:\n");
+        for (Comida comida : listaComida) {
+            resumen.append(comida.nombre)
+                   .append(" | Calorías: ").append(comida.calorias)
+                   .append(" | Fecha de Caducidad: ").append(comida.fechaCaducidad)
+                   .append("\n");
+        }
+ 
+        // Imprimir resumen
+        System.out.println(resumen.toString());
         
 
     }
